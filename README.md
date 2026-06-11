@@ -11,9 +11,6 @@
       - [Installing Poetry.](#installing-poetry)
     - [Installing Poetry driven project.](#installing-poetry-driven-project)
     - [Building distributions.](#building-distributions)
-    - [Extensions.](#extensions)
-      - [Add new extension](#add-new-extension)
-      - [Benchmark function.](#benchmark-function)
   - [Configuration system.](#configuration-system)
     - [Configuration Hierarchy (Visual)](#configuration-hierarchy-visual)
   - [Version information](#version-information)
@@ -48,20 +45,7 @@ src
     pymodule    # name of the module, will be used as a name of the directory where the module will be installed
         __init__.py
         # projects sources, distributed in modules
-        extensions      # Cython and C extensions
-            cmodulea    # cmodulea C extension
-                __init__.py     # files of cmodulea
-                cmodulea.c
-                cmodulea.h
-                utils
-                    utils.c
-            cmoduleb    # cmoduleb C extension
-                __init__.py     # files of cmoduleb
-                cmoduleb.c
-            hello_world         # Cython extensions
-                hello_world.pyx
-            worker
-                worker.pyx
+        extensions      # Cython and C extensions (omitted here)
         cli
             # command line entry points
             app.py
@@ -206,39 +190,6 @@ This command will produce two files in `dist` directory like these
 -a----     27.11.2024 г.     17:21         218137 pymodule-0.1.0-cp313-cp313-win_amd64.whl
 -a----     27.11.2024 г.     17:20         163210 pymodule-0.1.0.tar.gz
 ```
-
-### Extensions.
-
-This project supports C and Cython extensions. They live in dedicated directories. Paths to these directories are given in `pyproject.toml` in `[tool.build.config]`.
-
-* extensions - path to the directory where C and Cython extensions are. Each extension has its own subdirectory with allowed directory tree beneath it. Names of directories become extensions names.
-* include_dirs - paths where C header files for C extensions are stored (Not tested for Cython extensions, probably used).
-* library_dirs - paths where external libraries are stored (.dll or .so). Used by both kinds of extensions (not tested yet).
-* libraries - This specifies the name of the libraries to link against, without the lib prefix or file extension.
-
-See the directory structure of this skeleton project to take shape of extension directories and their content.
-
-Each extension can contain Cython files (.pyx), C files and native Python files. Cython files are compiled to C files (do not edit them). Then all C files in the directory are compiled. The final result is a .pyd which in Windows is a DLL library. In Linux systems, .so file is generated. For Cython files descriptive .html files are generated. They are some kind of listings, where generated C code is shown below correspondent Cython code. Native Python files are not touched and can be used as usually.
-
-Extensions are imported as normal Python modules. The rules of using `__init__.py` are valid.
-
-#### Add new extension
-
-To add new extension
-
-* create new directory for it in `cython_path` or `c_ext` path. Name it as the extension name.
-* create `__init__.py` in created directory.
-* add the directory in [tool.poetry] `include` list.
-
-#### Benchmark function.
-
-This project contains a benchmark functions to show how much faster is Cython vs Python and C vs Cython. Benchmark function is a function that sums first 300 fibonacci numbers N times.
-
-* Python variant is in `src/pymodule/core/benchmark.py` - `python_benchmark`
-* Cython variant is in `src/pymodule/cyth/worker.pyx` - `cython_benchmark`
-* C variant is in `src/pymodule/c_ext/cmodulea/cmodulea.c` - `c_benchmark`
-
-`src/pymodule/core/benchmark.benchmark()` is the root function that calls in a sequence above functions and prints results. Benchmarks show the speeds of calculation and demonstrate interactions between Python, Cython and C.
 
 ## Configuration system.
 
