@@ -20,6 +20,7 @@ def run_app(cfg:Config) -> None:
         pymodule.goodbye_from_core_module_b()
         pymodule.hello_from_utils()
         pymodule.hello_from_ina236()
+        pymodule.hello_from_ina236()
 
     except ValueError as e:
         raise e
